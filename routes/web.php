@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 });
 
 
@@ -27,7 +28,14 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
 });
 
 Route::get('/dashboard', function () {
-    $userId = Auth::user()->id_user;
+    $user = Auth::user();
+    
+    // Jika admin mengakses /dashboard, redirect ke dashboard admin
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    $userId = $user->id_user;
 
     // Ambil daftar pesanan milik user ini
     $pesanan = Pesanan::where('id_user', $userId)->latest()->get();
