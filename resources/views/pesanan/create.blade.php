@@ -19,9 +19,12 @@
 
       <div class="flex items-center gap-3">
         <span class="hidden sm:inline text-sm text-slate-500">Halo, <span class="font-semibold text-slate-800">{{ Auth::user()->name }}</span></span>
-        <a href="{{ route('logout') }}" class="text-sm font-semibold text-slate-500 hover:text-red-600 transition px-3 py-2 rounded-lg hover:bg-red-50">
-          Keluar
-        </a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="text-sm font-semibold text-slate-500 hover:text-red-600 transition px-3 py-2 rounded-lg hover:bg-red-50">
+                Keluar
+            </button>
+        </form>
       </div>
     </div>
 
@@ -113,6 +116,7 @@
             type="file"
             id="bukti"
             name="bukti_pembayaran"
+            required
             accept="image/*,.pdf"
             class="w-full text-sm text-slate-500 border-[1.5px] border-dashed border-slate-200 rounded-xl px-4 py-3 bg-slate-50 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-700 cursor-pointer transition"
           >

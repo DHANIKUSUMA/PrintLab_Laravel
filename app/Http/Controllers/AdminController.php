@@ -28,4 +28,14 @@ class AdminController extends Controller
             'saldo_kas'
         ));
     }
+    public function KelolaPesanan()
+    {
+        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
+        return view('admin.KelolaPesanan', compact('pesanan'));
+    }
+    public function Verifikasi()
+    {
+        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
+        return view('admin.Verifikasi', compact('pesanan'));
+    }
 }

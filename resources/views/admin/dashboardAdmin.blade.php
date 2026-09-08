@@ -40,10 +40,6 @@
             <h1 id="pageTitle" class="text-lg font-bold text-slate-800 tracking-tight">Dashboard</h1>
           </div>
           <div class="flex items-center gap-3">
-            <div class="hidden md:flex items-center gap-2 bg-brand-50 rounded-xl px-3.5 py-2 w-64 border border-brand-100/50">
-              <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
-              <input placeholder="Cari order, user..." class="bg-transparent text-sm outline-none w-full placeholder:text-slate-400 border-none p-0 focus:ring-0">
-            </div>
             <span class="hidden sm:inline text-sm text-slate-500">Halo, <span class="font-semibold text-slate-800">{{ Auth::user()->name }}</span></span>
           </div>
         </div>
@@ -103,19 +99,20 @@
           </div>
 
           <!-- RECENT ORDERS TABLE -->
-          <div class="grid lg:grid-cols-3 gap-5 mt-6">
-            <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_rgba(30,60,160,0.06)] p-5 sm:p-7">
+          <div class="mt-6">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_rgba(30,60,160,0.06)] p-4 sm:p-6 lg:p-7">
               <div class="flex items-center justify-between mb-5">
                 <div>
                   <h3 class="text-lg sm:text-xl font-bold text-slate-800">Order Terbaru</h3>
                   <p class="text-xs text-slate-400 mt-0.5">Daftar transaksi cetak yang baru masuk.</p>
                 </div>
-                <a href="{{ url('/admin/KelolaPesanan') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline inline-flex items-center gap-1">
+                <a href="{{ url('/admin/KelolaPesanan') }}" class="text-xs sm:text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline inline-flex items-center gap-1">
                   Lihat semua <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </a>
               </div>
 
-              <div class="overflow-x-auto">
+              <!-- TAMPILAN DESKTOP & TABLET (Table View) -->
+              <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-sm text-left">
                   <thead>
                     <tr class="border-b border-slate-100 text-slate-400 font-semibold">
@@ -156,6 +153,50 @@
                   </tbody>
                 </table>
               </div>
+
+              <!-- TAMPILAN MOBILE / HP (Card List View) -->
+              <div class="md:hidden space-y-3">
+                @forelse($pesanan as $row)
+                  <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-bold text-slate-800 text-sm tracking-tight">{{ $row->kode_order }}</span>
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold 
+                        @if($row->status === 'selesai') bg-green-50 text-green-700 border border-green-200/50
+                        @elseif($row->status === 'disetujui') bg-blue-50 text-blue-700 border border-blue-200/50
+                        @elseif($row->status === 'ditolak') bg-red-50 text-red-700 border border-red-200/50
+                        @else bg-amber-50 text-amber-700 border border-amber-200/50 @endif">
+                        <span class="w-1.5 h-1.5 rounded-full 
+                          @if($row->status === 'selesai') bg-green-500
+                          @elseif($row->status === 'disetujui') bg-blue-500
+                          @elseif($row->status === 'ditolak') bg-red-500
+                          @else bg-amber-500 @endif"></span>
+                        {{ ucfirst($row->status) }}
+                      </span>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <span class="text-slate-400">Pemesan</span>
+                        <span class="font-medium text-slate-700">{{ $row->user->name ?? '-' }}</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-slate-400">Kertas</span>
+                        <span class="font-medium text-slate-700">{{ $row->jenisKertas->nama_kertas ?? '-' }} ({{ $row->jumlah_lembar }} lbr)</span>
+                      </div>
+                    </div>
+
+                    <div class="pt-2.5 border-t border-slate-200/60 flex items-center justify-between">
+                      <span class="text-xs text-slate-400 font-medium">Total Biaya</span>
+                      <span class="text-sm font-bold text-slate-800">Rp{{ number_format($row->total_biaya, 0, ',', '.') }}</span>
+                    </div>
+                  </div>
+                @empty
+                  <div class="py-8 text-center text-slate-400 text-sm">
+                    Belum ada data pesanan yang masuk.
+                  </div>
+                @endforelse
+              </div>
+
             </div>
           </div>
         </section>

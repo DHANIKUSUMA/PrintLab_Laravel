@@ -23,7 +23,7 @@ class PesananController extends Controller
             'id_jenis_kertas' => 'required|exists:jenis_kertas,id_jenis_kertas',
             'jumlah_lembar' => 'required|integer|min:1',
             'metode_pembayaran' => 'required',
-            'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         // Ambil harga kertas untuk menghitung total biaya secara otomatis

@@ -8,7 +8,7 @@ use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('auth.register');
+    return view('auth.login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -19,6 +19,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/KelolaPesanan', [AdminController::class, 'KelolaPesanan'])->name('admin.kelola-pesanan');
+    Route::get('/admin/Verifikasi', [AdminController::class, 'Verifikasi'])->name('admin.verifikasi');
 });
 
 
@@ -47,3 +49,4 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
