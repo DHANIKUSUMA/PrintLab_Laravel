@@ -35,7 +35,39 @@ class AdminController extends Controller
     }
     public function Verifikasi()
     {
-        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
-        return view('admin.Verifikasi', compact('pesanan'));
+        $pesanan = Pesanan::with(['user', 'jenisKertas'])
+        ->where('status', 'menunggu')
+        ->latest()
+        ->paginate(10);
+    // Hitung statistik untuk Stat Cards
+    $jumlah_verifikasi = Pesanan::where('status', 'menunggu')->count();
+    $jumlah_selesai = Pesanan::where('status', 'disetujui')->whereDate('updated_at', today())->count();
+    $jumlah_ditolak = Pesanan::where('status', 'ditolak')->whereDate('updated_at', today())->count();
+    return view('admin.Verifikasi', compact(
+        'pesanan',
+        'jumlah_verifikasi',
+        'jumlah_selesai',
+        'jumlah_ditolak'
+    ));
     }
+    public function updateStatusVerifikasi(Request $request)
+    {
+        $request->validate([
+            'kode_order' => 'required|exists:pesanan,kode_order',
+            'status' => 'required|in:disetujui,ditolak',
+        ]);
+
+        $pesanan = Pesanan::where('kode_order', $request->kode_order)->first();
+
+        if ($pesanan) {
+            $pesanan->status = $request->status;
+            $pesanan->save();
+
+            // Beri notifikasi
+            return back()->with('success', "Pesanan " . $request->status . " berhasil!");
+        } else {
+            return back()->with('error', "Pesanan tidak ditemukan!");
+        }
+    }
+
 }
