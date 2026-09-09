@@ -1,7 +1,7 @@
 <!-- SIDEBAR -->
 <aside 
-  :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-  class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200/80 flex flex-col transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:min-h-screen lg:h-auto shrink-0 shadow-2xl lg:shadow-none"
+  :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+  class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200/80 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:min-h-screen lg:h-auto shrink-0 shadow-2xl lg:shadow-none"
 >
   <!-- LOGO & BRAND HEADER -->
   <div class="h-16 flex items-center justify-between px-5 border-b border-slate-100 shrink-0">
@@ -53,9 +53,9 @@
 
     <p class="px-3 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Keuangan</p>
     
-    <a href="{{ url('/admin/Pemasukan') }}" 
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold transition {{ request()->is('admin/Pemasukan*') ? 'text-brand-700 bg-brand-50 shadow-sm' : 'text-slate-600 hover:text-brand-700 hover:bg-brand-50/70' }}">
-      <i data-lucide="arrow-down-circle" class="w-4 h-4 {{ request()->is('admin/Pemasukan*') ? 'text-brand-600' : 'text-slate-400' }}"></i>
+    <a href="{{ url('/admin/Pemasukkan') }}" 
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold transition {{ request()->is('admin/pemasukkan*') ? 'text-brand-700 bg-brand-50 shadow-sm' : 'text-slate-600 hover:text-brand-700 hover:bg-brand-50/70' }}">
+      <i data-lucide="arrow-down-circle" class="w-4 h-4 {{ request()->is('admin/pemasukkan*') ? 'text-brand-600' : 'text-slate-400' }}"></i>
       Pemasukan
     </a>
 

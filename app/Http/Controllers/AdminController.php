@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pesanan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -33,6 +34,7 @@ class AdminController extends Controller
         $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
         return view('admin.KelolaPesanan', compact('pesanan'));
     }
+    
     public function Verifikasi()
     {
         $pesanan = Pesanan::with(['user', 'jenisKertas'])
@@ -67,6 +69,31 @@ class AdminController extends Controller
             return back()->with('success', "Pesanan " . $request->status . " berhasil!");
         } else {
             return back()->with('error', "Pesanan tidak ditemukan!");
+        }
+    }
+
+    public function KelolaUser()
+    {   
+        $users = User::all();
+        return view('admin.KelolaUser', compact('users'));
+    }
+    public function updateStatusUser(Request $request)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id_user',
+            'status' => 'required|in:aktif,nonaktif,active,inactive',
+        ]);
+
+        $user = User::where('id_user', $request->id_user)->first();
+
+        if ($user) {
+            $user->status = $request->status;
+            $user->save();
+
+            // Beri notifikasi
+            return back()->with('success', "User " . $request->status . " berhasil!");
+        } else {
+            return back()->with('error', "User tidak ditemukan!");
         }
     }
 

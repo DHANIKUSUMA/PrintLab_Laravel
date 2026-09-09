@@ -221,6 +221,8 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
+    
+
   </script>
 </body>
 </html>

@@ -2,26 +2,29 @@
 
 namespace Database\Seeders;
 
+use App\Models\JenisKertas;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class JenisKertasSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('jenis_kertas')->insert([
+        $data = [
             [
                 'nama_kertas' => 'Kertas Lab',
                 'harga' => 250,
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'nama_kertas' => 'Kertas Sendiri',
                 'harga' => 150,
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($data as $item) {
+            JenisKertas::updateOrCreate(
+                ['nama_kertas' => $item['nama_kertas']],
+                ['harga' => $item['harga']]
+            );
+        }
     }
 }

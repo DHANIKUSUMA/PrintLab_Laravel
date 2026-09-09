@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PemasukkanController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/KelolaPesanan', [AdminController::class, 'KelolaPesanan'])->name('admin.kelola-pesanan');
     Route::get('/admin/Verifikasi', [AdminController::class, 'Verifikasi'])->name('admin.verifikasi');
+    Route::get('/admin/KelolaUser', [AdminController::class, 'KelolaUser'])->name('admin.kelola-user');
+    Route::get('/admin/Pemasukkan', [PemasukkanController::class, 'Pemasukkan'])->name('admin.pemasukkan');
+    Route::post('/admin/KelolaUser/update-status', [AdminController::class, 'updateStatusUser'])->name('admin.kelola-user.update-status');
     Route::post('/admin/Verifikasi/update-status', [AdminController::class, 'updateStatusVerifikasi'])->name('admin.verifikasi.update');
 });
 
