@@ -38,10 +38,22 @@ class LoginRequest extends FormRequest
      *
      * @throws ValidationException
      */
-    public function authenticate(): void
+        public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
+        // 1. Cek apakah user ada dan berstatus nonaktif
+        $user = \App\Models\User::where('email', $this->email)->first();
+
+        if ($user && in_array(strtolower($user->status), ['nonaktif', 'inactive'])) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda sedang dinonaktifkan oleh Admin. Silakan hubungi customer service / admin.',
+            ]);
+        }
+
+        // 2. Coba proses autentikasi email & password
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 

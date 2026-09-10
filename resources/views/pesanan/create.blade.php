@@ -4,11 +4,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
       <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-[9px] bg-brand-600 flex items-center justify-center shrink-0">
-          <svg viewBox="0 0 24 24" class="w-5 h-5 fill-white">
-            <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 18H4V6H20V18ZM6 10H8V14H6V10ZM9.5 8H11.5V16H9.5V8ZM13 11H15V14H13V11Z"/>
-          </svg>
-        </div>
+        <x-application-logo class="w-9 h-9 object-contain shrink-0" />
         <span class="text-lg font-bold text-slate-800 tracking-tight hidden xs:inline">PrintLab</span>
       </a>
 

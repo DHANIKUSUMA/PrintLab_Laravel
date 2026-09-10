@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PemasukkanController;
+use App\Http\Controllers\PengeluaranController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/Verifikasi', [AdminController::class, 'Verifikasi'])->name('admin.verifikasi');
     Route::get('/admin/KelolaUser', [AdminController::class, 'KelolaUser'])->name('admin.kelola-user');
     Route::get('/admin/Pemasukkan', [PemasukkanController::class, 'Pemasukkan'])->name('admin.pemasukkan');
+    Route::get('admin/Pengeluaran', [PengeluaranController::class, 'Pengeluaran'])->name('admin.pengeluaran');
+    Route::post('admin/Pengeluaran', [PengeluaranController::class, 'store'])->name('admin.pengeluaran.store');
     Route::post('/admin/KelolaUser/update-status', [AdminController::class, 'updateStatusUser'])->name('admin.kelola-user.update-status');
     Route::post('/admin/Verifikasi/update-status', [AdminController::class, 'updateStatusVerifikasi'])->name('admin.verifikasi.update');
 });

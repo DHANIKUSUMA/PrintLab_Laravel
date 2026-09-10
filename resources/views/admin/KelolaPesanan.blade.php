@@ -37,10 +37,60 @@
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-1">
         <div class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_rgba(30,60,160,0.06)] p-5 sm:p-7">
 
-          <div class="mb-6 sm:mb-8">
+          <!-- HEADER TITLE -->
+          <div class="mb-6">
             <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Semua Pesanan</h2>
             <p class="text-sm text-slate-500 mt-1">Daftar seluruh transaksi dan pesanan cetak pelanggan.</p>
           </div>
+
+          <!-- FORM FILTER & PENCARIAN -->
+          <form method="GET" action="{{ route('admin.kelola-pesanan') }}" class="mb-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+            
+            <!-- TAB FILTER STATUS -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+              <a href="{{ route('admin.kelola-pesanan', array_merge(request()->except(['status', 'page']))) }}"
+                 class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition {{ !request()->filled('status') ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Semua
+              </a>
+              <a href="{{ route('admin.kelola-pesanan', array_merge(request()->except('page'), ['status' => 'menunggu'])) }}"
+                 class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition {{ request('status') === 'menunggu' ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Menunggu
+              </a>
+              <a href="{{ route('admin.kelola-pesanan', array_merge(request()->except('page'), ['status' => 'disetujui'])) }}"
+                 class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition {{ request('status') === 'disetujui' ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Disetujui
+              </a>
+              <a href="{{ route('admin.kelola-pesanan', array_merge(request()->except('page'), ['status' => 'ditolak'])) }}"
+                 class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition {{ request('status') === 'ditolak' ? 'bg-red-500 text-white shadow-sm shadow-red-500/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Ditolak
+              </a>
+              <a href="{{ route('admin.kelola-pesanan', array_merge(request()->except('page'), ['status' => 'selesai'])) }}"
+                 class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition {{ request('status') === 'selesai' ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Selesai
+              </a>
+            </div>
+
+            <!-- SEARCH INPUT -->
+            <div class="flex items-center gap-2">
+              @if(request('status'))
+                <input type="hidden" name="status" value="{{ request('status') }}">
+              @endif
+              <div class="relative flex-1 sm:w-64">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode / nama pemesan..." 
+                       class="w-full text-sm pl-9 pr-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-600 transition">
+              </div>
+              <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
+                Cari
+              </button>
+              @if(request()->filled('search') || request()->filled('status'))
+                <a href="{{ route('admin.kelola-pesanan') }}" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition" title="Reset Filter">
+                  <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                </a>
+              @endif
+            </div>
+
+          </form>
             
           <!-- TABEL PESANAN -->
           <div class="overflow-x-auto">
@@ -80,8 +130,9 @@
                   </tr>
                 @empty
                   <tr>
-                    <td colspan="5" class="py-8 text-center text-slate-400">
-                      Belum ada data pesanan yang masuk.
+                    <td colspan="5" class="py-12 text-center text-slate-400">
+                      <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-slate-300"></i>
+                      Tidak ada data pesanan yang sesuai dengan filter/pencarian.
                     </td>
                   </tr>
                 @endforelse
@@ -90,9 +141,11 @@
           </div>
 
           <!-- PAGINATION -->
-          <div class="mt-6 pt-4 border-t border-slate-100">
-            {{ $pesanan->links() }}
-          </div>
+          @if($pesanan->hasPages())
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              {{ $pesanan->links() }}
+            </div>
+          @endif
 
         </div>
       </main>

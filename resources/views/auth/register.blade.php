@@ -12,11 +12,7 @@
 
       <!-- Logo & Brand Header -->
       <div class="flex items-center gap-2.5 mb-8">
-        <div class="w-10 h-10 rounded-[10px] bg-brand-600 flex items-center justify-center shrink-0 shadow-md shadow-brand-600/30">
-          <svg viewBox="0 0 24 24" class="w-[22px] h-[22px] fill-white">
-            <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 18H4V6H20V18ZM6 10H8V14H6V10ZM9.5 8H11.5V16H9.5V8ZM13 11H15V14H13V11Z"/>
-          </svg>
-        </div>
+        <x-application-logo class="w-10 h-10 object-contain shrink-0" />
         <span class="text-xl font-bold text-slate-800 tracking-tight">PrintLab</span>
       </div>
 

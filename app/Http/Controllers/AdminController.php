@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pesanan;
+use App\Models\Pengeluaran;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,14 +12,14 @@ class AdminController extends Controller
     public function index()
     {
         // Ambil semua pesanan untuk dashboard admin
-        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->get();
+        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
 
         // Statistik
         $jumlah_print = Pesanan::whereDate('created_at', today())->count();
         $pendapatan_harian = Pesanan::whereDate('created_at', today())
             ->whereIn('status', ['disetujui', 'selesai'])
             ->sum('total_biaya');
-        $total_pengeluaran = 0; // Default jika belum ada fitur pengeluaran
+        $total_pengeluaran = Pengeluaran::sum('jumlah');
         $saldo_kas = Pesanan::whereIn('status', ['disetujui', 'selesai'])->sum('total_biaya') - $total_pengeluaran;
 
         return view('admin.dashboardAdmin', compact(
@@ -29,12 +30,33 @@ class AdminController extends Controller
             'saldo_kas'
         ));
     }
-    public function KelolaPesanan()
+        public function KelolaPesanan(Request $request)
     {
-        $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
+        $query = Pesanan::with(['user', 'jenisKertas']);
+
+        // 1. Filter Status (jika ada yang dipilih)
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // 2. Fitur Pencarian (Kode Order atau Nama Pemesan)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode_order', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($u) use ($search) {
+                      $u->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // withQueryString() agar filter tetap aktif saat berpindah pagination
+        $pesanan = $query->latest()->paginate(10)->withQueryString();
+
         return view('admin.KelolaPesanan', compact('pesanan'));
     }
-    
+
+
     public function Verifikasi()
     {
         $pesanan = Pesanan::with(['user', 'jenisKertas'])
