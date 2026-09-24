@@ -14,10 +14,10 @@ class PengeluaranController extends Controller
         $total_pemasukan = Pesanan::whereIn('status', ['disetujui', 'selesai'])->sum('total_biaya');
         $total_pengeluaran = Pengeluaran::sum('jumlah');
         $saldo_kas = $total_pemasukan - $total_pengeluaran;
-        
+
         $pengeluaran_bulan_ini = Pengeluaran::whereMonth('tanggal', now()->month)
-                                            ->whereYear('tanggal', now()->year)
-                                            ->sum('jumlah');
+            ->whereYear('tanggal', now()->year)
+            ->sum('jumlah');
         $total_transaksi = Pengeluaran::count();
 
         return view('admin.Pengeluaran', compact('pengeluaran', 'total_pengeluaran', 'saldo_kas', 'pengeluaran_bulan_ini', 'total_transaksi'));

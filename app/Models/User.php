@@ -12,6 +12,14 @@ class User extends Authenticatable
 
     protected $table = 'users';
     protected $primaryKey = 'id_user';
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    protected function casts(): array
+    {
+        return['password' => 'hashed'];
+    }
 
     protected $fillable = [
         'name',

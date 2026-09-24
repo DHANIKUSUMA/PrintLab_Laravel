@@ -8,15 +8,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
+    public function index(): View
+    {
+        $user = Auth::user();
+        return view('admin.profile',['user'=> Auth::user(),]);
+    }
+
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('admin.profile', [
             'user' => $request->user(),
         ]);
     }
