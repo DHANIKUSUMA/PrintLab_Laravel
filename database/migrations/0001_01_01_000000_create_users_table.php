@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'pengguna'])->default('pengguna');
             $table->string('status')->default('aktif'); // Sesuaikan kebutuhan
+            $table->rememberToken();
             $table->timestamps();
         });
 
