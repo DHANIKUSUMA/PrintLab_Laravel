@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.dashboard', absolute: false);
+            return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('dashboard', absolute: false);
+        return redirect()->route('dashboard');
     }
     return view('auth.login');
 });
@@ -54,7 +54,7 @@ Route::get('/dashboard', function () {
     
     // Jika admin mengakses /dashboard, redirect ke dashboard admin
     if ($user->role === 'admin') {
-        return redirect()->route('admin.dashboard', absolute: false);
+        return redirect()->route('admin.dashboard');
     }
 
     $userId = $user->id_user;

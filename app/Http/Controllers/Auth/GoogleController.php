@@ -20,7 +20,7 @@ class GoogleController extends Controller
     {
         try {
             $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
-            $googleUser = Socialite::driver('google')->redirectUrl($redirectUrl)->user();
+            $googleUser = Socialite::driver('google')->redirectUrl($redirectUrl)->stateless()->user();
             
             // Cari user berdasarkan google_id atau email
             $user = User::where('google_id', $googleUser->id)
@@ -35,7 +35,7 @@ class GoogleController extends Controller
             } else {
                 // Buat user baru jika belum terdaftar
                 $user = User::create([
-                    'name' => $googleUser->name,
+                    'name' => $googleUser->name ?? $googleUser->nickname ?? 'User',
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
                     'role' => 'pengguna',
@@ -48,13 +48,18 @@ class GoogleController extends Controller
 
             // Redirect sesuai role
             if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard', absolute: false));
+                return redirect()->intended('/admin/dashboard');
             }
 
-            return redirect()->intended(route('dashboard', absolute: false));
+            return redirect()->intended('/dashboard');
 
         } catch (Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal masuk menggunakan Google.');
+            \Illuminate\Support\Facades\Log::error('Google Auth Error: ' . $e->getMessage());
+            $errorMessage = config('app.debug') 
+                ? 'Gagal masuk Google: ' . $e->getMessage() 
+                : 'Gagal masuk menggunakan Google.';
+
+            return redirect()->route('login')->with('error', $errorMessage);
         }
     }
 }
