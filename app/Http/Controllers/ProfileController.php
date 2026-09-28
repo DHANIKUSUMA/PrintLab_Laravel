@@ -18,12 +18,12 @@ class ProfileController extends Controller
     public function index(): View
     {
         $user = Auth::user();
-        return view('admin.profile',['user'=> Auth::user(),]);
+        return view('admin.Profile',['user'=> Auth::user(),]);
     }
 
     public function edit(Request $request): View
     {
-        return view('admin.profile', [
+        return view('admin.Profile', [
             'user' => $request->user(),
         ]);
     }

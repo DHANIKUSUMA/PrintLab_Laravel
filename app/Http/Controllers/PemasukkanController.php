@@ -14,7 +14,7 @@ class PemasukkanController extends Controller
         $pesanan = Pesanan::with(['user', 'JenisKertas'])->whereIn('status', ['disetujui','selesai'])->latest()->paginate(10);
 
         $saldo_kas = Pesanan::where('status', 'disetujui')->sum('total_biaya');
-        return view('admin.pemasukkan', compact('pesanan', 'saldo_kas'));
+        return view('admin.Pemasukkan', compact('pesanan', 'saldo_kas'));
 
  
     }

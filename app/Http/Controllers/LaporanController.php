@@ -16,7 +16,7 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         $data = $this->getLaporanData($request);
-        return view('admin.laporan', $data);
+        return view('admin.Laporan', $data);
     }
 
     /**
