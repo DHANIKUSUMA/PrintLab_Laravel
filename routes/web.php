@@ -48,7 +48,7 @@ Route::get('/dashboard', function () {
     
     // Jika admin mengakses /dashboard, redirect ke dashboard admin
     if ($user->role === 'admin') {
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.dashboard', absolute: false);
     }
 
     $userId = $user->id_user;

@@ -12,13 +12,15 @@ class GoogleController extends Controller
 {
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
+        return Socialite::driver('google')->redirectUrl($redirectUrl)->redirect();
     }
 
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
+            $googleUser = Socialite::driver('google')->redirectUrl($redirectUrl)->user();
             
             // Cari user berdasarkan google_id atau email
             $user = User::where('google_id', $googleUser->id)
@@ -46,10 +48,10 @@ class GoogleController extends Controller
 
             // Redirect sesuai role
             if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
+                return redirect()->intended(route('admin.dashboard', absolute: false));
             }
 
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('dashboard', absolute: false));
 
         } catch (Exception $e) {
             return redirect()->route('login')->with('error', 'Gagal masuk menggunakan Google.');
