@@ -11,6 +11,12 @@ use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard', absolute: false);
+        }
+        return redirect()->route('dashboard', absolute: false);
+    }
     return view('auth.login');
 });
 

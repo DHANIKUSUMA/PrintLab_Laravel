@@ -44,7 +44,7 @@ class GoogleController extends Controller
                 ]);
             }
 
-            Auth::login($user);
+            Auth::login($user, remember: true);
 
             // Redirect sesuai role
             if ($user->role === 'admin') {

@@ -54,7 +54,7 @@ class LoginRequest extends FormRequest
         }
 
         // 2. Coba proses autentikasi email & password
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember', true))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
