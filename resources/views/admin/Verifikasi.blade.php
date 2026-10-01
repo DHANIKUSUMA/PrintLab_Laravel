@@ -118,7 +118,12 @@
 
                   <td class="px-5 py-3.5">
                     @if(!empty($row->bukti_pembayaran))
-                      <button onclick="openModal('{{ asset('storage/' . $row->bukti_pembayaran) }}', 'Bukti Pembayaran - {{ $row->kode_order }}')" class="text-brand-600 font-semibold hover:underline flex items-center gap-1">
+                      @php
+                        $buktiUrl = \Illuminate\Support\Str::startsWith($row->bukti_pembayaran, ['http://', 'https://']) 
+                            ? $row->bukti_pembayaran 
+                            : asset('storage/' . $row->bukti_pembayaran);
+                      @endphp
+                      <button onclick="openModal('{{ $buktiUrl }}', 'Bukti Pembayaran - {{ $row->kode_order }}')" class="text-brand-600 font-semibold hover:underline flex items-center gap-1">
                         <i data-lucide="file-text" class="w-3.5 h-3.5"></i>Lihat Bukti
                       </button>
                     @else 

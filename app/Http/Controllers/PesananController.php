@@ -31,7 +31,33 @@ class PesananController extends Controller
 
         $buktiPath = null;
         if ($request->hasFile('bukti_pembayaran')) {
-            $buktiPath = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+            $file = $request->file('bukti_pembayaran');
+
+            $supabaseUrl = env('SUPABASE_URL');
+            $supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY') ?: env('SUPABASE_KEY') ?: env('SUPABASE_ANON_KEY');
+            $supabaseBucket = env('SUPABASE_BUCKET', 'bukti_pembayaran');
+
+            if ($supabaseUrl && $supabaseKey) {
+                $filename = 'bukti_' . time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                $uploadUrl = rtrim($supabaseUrl, '/') . '/storage/v1/object/' . $supabaseBucket . '/' . $filename;
+
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $supabaseKey,
+                    'apikey' => $supabaseKey,
+                ])->withBody(
+                    file_get_contents($file->getRealPath()),
+                    $file->getClientMimeType()
+                )->post($uploadUrl);
+
+                if ($response->successful()) {
+                    $buktiPath = rtrim($supabaseUrl, '/') . '/storage/v1/object/public/' . $supabaseBucket . '/' . $filename;
+                } else {
+                    \Illuminate\Support\Facades\Log::error('Supabase Storage Upload Failed: ' . $response->body());
+                    $buktiPath = $file->store('bukti_pembayaran', 'public');
+                }
+            } else {
+                $buktiPath = $file->store('bukti_pembayaran', 'public');
+            }
         }
 
         Pesanan::create([
