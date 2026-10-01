@@ -11,16 +11,21 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // Ambil semua pesanan untuk dashboard admin
+        // Ambil pesanan untuk dashboard admin (paginated)
         $pesanan = Pesanan::with(['user', 'jenisKertas'])->latest()->paginate(10);
 
-        // Statistik
-        $jumlah_print = Pesanan::whereDate('created_at', today())->count();
-        $pendapatan_harian = Pesanan::whereDate('created_at', today())
-            ->whereIn('status', ['disetujui', 'selesai'])
-            ->sum('total_biaya');
-        $total_pengeluaran = Pengeluaran::sum('jumlah');
-        $saldo_kas = Pesanan::whereIn('status', ['disetujui', 'selesai'])->sum('total_biaya') - $total_pengeluaran;
+        // Konsolidasi statistik pesanan menjadi 1 query agregasi
+        $today = today()->toDateString();
+        $pesananStats = Pesanan::selectRaw("
+            COUNT(CASE WHEN DATE(created_at) = ? THEN 1 END) as jumlah_print,
+            COALESCE(SUM(CASE WHEN DATE(created_at) = ? AND status IN ('disetujui', 'selesai') THEN total_biaya ELSE 0 END), 0) as pendapatan_harian,
+            COALESCE(SUM(CASE WHEN status IN ('disetujui', 'selesai') THEN total_biaya ELSE 0 END), 0) as total_pendapatan
+        ", [$today, $today])->first();
+
+        $jumlah_print = (int) ($pesananStats->jumlah_print ?? 0);
+        $pendapatan_harian = (float) ($pesananStats->pendapatan_harian ?? 0);
+        $total_pengeluaran = (float) (Pengeluaran::sum('jumlah') ?? 0);
+        $saldo_kas = (float) (($pesananStats->total_pendapatan ?? 0) - $total_pengeluaran);
 
         return view('admin.dashboardAdmin', compact(
             'pesanan',
@@ -60,19 +65,28 @@ class AdminController extends Controller
     public function Verifikasi()
     {
         $pesanan = Pesanan::with(['user', 'jenisKertas'])
-        ->where('status', 'menunggu')
-        ->latest()
-        ->paginate(10);
-    // Hitung statistik untuk Stat Cards
-    $jumlah_verifikasi = Pesanan::where('status', 'menunggu')->count();
-    $jumlah_selesai = Pesanan::where('status', 'disetujui')->whereDate('updated_at', today())->count();
-    $jumlah_ditolak = Pesanan::where('status', 'ditolak')->whereDate('updated_at', today())->count();
-    return view('admin.Verifikasi', compact(
-        'pesanan',
-        'jumlah_verifikasi',
-        'jumlah_selesai',
-        'jumlah_ditolak'
-    ));
+            ->where('status', 'menunggu')
+            ->latest()
+            ->paginate(10);
+
+        // Konsolidasi statistik verifikasi menjadi 1 query agregasi
+        $today = today()->toDateString();
+        $stats = Pesanan::selectRaw("
+            COUNT(CASE WHEN status = 'menunggu' THEN 1 END) as jumlah_verifikasi,
+            COUNT(CASE WHEN status = 'disetujui' AND DATE(updated_at) = ? THEN 1 END) as jumlah_selesai,
+            COUNT(CASE WHEN status = 'ditolak' AND DATE(updated_at) = ? THEN 1 END) as jumlah_ditolak
+        ", [$today, $today])->first();
+
+        $jumlah_verifikasi = (int) ($stats->jumlah_verifikasi ?? 0);
+        $jumlah_selesai = (int) ($stats->jumlah_selesai ?? 0);
+        $jumlah_ditolak = (int) ($stats->jumlah_ditolak ?? 0);
+
+        return view('admin.Verifikasi', compact(
+            'pesanan',
+            'jumlah_verifikasi',
+            'jumlah_selesai',
+            'jumlah_ditolak'
+        ));
     }
     public function updateStatusVerifikasi(Request $request)
     {

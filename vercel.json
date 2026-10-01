@@ -1,6 +1,7 @@
 {
   "version": 2,
   "outputDirectory": "public",
+  "regions": ["sin1"],
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.8.0"
@@ -9,11 +10,17 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/build/$1"
+      "dest": "/build/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/(favicon.ico|robots.txt|.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/$1"
+      "dest": "/$1",
+      "headers": {
+        "cache-control": "public, max-age=86400"
+      }
     },
     {
       "src": "/(.*)",
@@ -31,3 +38,4 @@
     "SESSION_DRIVER": "cookie"
   }
 }
+

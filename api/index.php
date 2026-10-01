@@ -6,18 +6,20 @@ use Illuminate\Http\Request;
 define('LARAVEL_START', microtime(true));
 
 // Inisialisasi folder storage yang writable di /tmp untuk Vercel Serverless
-$dirs = [
-    '/tmp/views',
-    '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache/data',
-    '/tmp/storage/framework/sessions',
-    '/tmp/storage/logs',
-    '/tmp/storage/app/public',
-];
+if (!is_dir('/tmp/storage/framework/views')) {
+    $dirs = [
+        '/tmp/views',
+        '/tmp/storage/framework/views',
+        '/tmp/storage/framework/cache/data',
+        '/tmp/storage/framework/sessions',
+        '/tmp/storage/logs',
+        '/tmp/storage/app/public',
+    ];
 
-foreach ($dirs as $dir) {
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0755, true);
+    foreach ($dirs as $dir) {
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
     }
 }
 

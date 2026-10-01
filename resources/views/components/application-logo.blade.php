@@ -1,1 +1,45 @@
-<img src="{{ asset('images/logo.svg') }}" {{ $attributes }} alt="PrintLab Logo">
+<svg {{ $attributes->merge(['class' => 'shrink-0']) }} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flaskGrad-app" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="liquidGrad-app" x1="12" y1="22" x2="36" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="bgGrad-app" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#DBEAFE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background container -->
+  <rect width="48" height="48" rx="12" fill="url(#bgGrad-app)"/>
+  
+  <!-- Liquid inside Flask -->
+  <path d="M15.5 26 C18.5 24, 21.5 28, 25 25.5 C28.5 23, 31 26.5, 32.5 26 L36.2 37.2 C37.3 40.2 35.1 43.5 31.9 43.5 L16.1 43.5 C12.9 43.5 10.7 40.2 11.8 37.2 Z" fill="url(#liquidGrad-app)" opacity="0.95"/>
+
+  <!-- Liquid wave line -->
+  <path d="M15 27 C18 24.5, 21.5 28.5, 25 26 C28.5 23.5, 31 27, 33 27" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+
+  <!-- Reaction Bubbles -->
+  <circle cx="20.5" cy="36" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="27.5" cy="33.5" r="1.1" fill="#FFFFFF" opacity="0.75"/>
+  <circle cx="17.5" cy="32" r="0.8" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="29" cy="38" r="1.2" fill="#FFFFFF" opacity="0.75"/>
+
+  <!-- Sparkles -->
+  <circle cx="24" cy="20" r="1" fill="#06B6D4" opacity="0.85"/>
+  <circle cx="25.5" cy="15" r="1.2" fill="#2563EB" opacity="0.9"/>
+  
+  <!-- Lab Flask Glass Outline -->
+  <path d="M21 8 L27 8 M21 8 V14.5 L11.5 36.8 C10.2 39.8 12.4 43.5 15.7 43.5 H32.3 C35.6 43.5 37.8 39.8 36.5 36.8 L27 14.5 V8 M19 8 H29" 
+        stroke="url(#flaskGrad-app)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Measurement markings on flask -->
+  <line x1="20" y1="29" x2="23" y2="29" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <line x1="18.5" y1="34" x2="22.5" y2="34" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <line x1="16.5" y1="39" x2="21.5" y2="39" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+</svg>
